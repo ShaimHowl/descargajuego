@@ -1,4 +1,4 @@
-# 🎮 !!!Descarga el juego¡¡¡
+# 🎮 ¡¡¡Descarga el juego!!!
 
 Página web de mi juego 2D donde puedes descargarlo.
 
