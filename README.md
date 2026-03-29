@@ -1,2 +1,3 @@
 # Link-Descargar-juego
-## https://github.com/ShaimHowl/STEAL-A-COINS-1/releases/download/v1.0/JuegoHecho.zip
+## Clona este repositorio, veras la pgian del juego y tendras un boton para descargar el juego
+## ¡¡¡ Disfrutaloooo !!!
