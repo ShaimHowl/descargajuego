@@ -1,0 +1,238 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --yellow:  #FFD93D;
+  --orange:  #FF6B35;
+  --pink:    #FF4D80;
+  --blue:    #4ECDC4;
+  --dark:    #1A1A2E;
+  --darker:  #0F0F1A;
+  --white:   #FFFDF7;
+  --card-bg: #16213E;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: var(--darker);
+  color: var(--white);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.coin-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.coin {
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0.08;
+  animation: floatCoin 8s ease-in-out infinite;
+}
+
+.c1 { top: 10%; left: 5%;  animation-delay: 0s;   font-size: 2.5rem; }
+.c2 { top: 20%; left: 90%; animation-delay: 1.2s; font-size: 1.8rem; }
+.c3 { top: 50%; left: 8%;  animation-delay: 2.5s; font-size: 3rem;   }
+.c4 { top: 60%; left: 85%; animation-delay: 0.8s; font-size: 2rem;   }
+.c5 { top: 80%; left: 15%; animation-delay: 3s;   font-size: 2.2rem; }
+.c6 { top: 35%; left: 95%; animation-delay: 1.8s; font-size: 1.6rem; }
+.c7 { top: 90%; left: 75%; animation-delay: 0.4s; font-size: 2.8rem; }
+
+@keyframes floatCoin {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-20px) rotate(15deg); }
+}
+
+.wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rem;
+}
+
+.hero {
+  text-align: center;
+  padding-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.badge {
+  display: inline-block;
+  background: var(--blue);
+  color: var(--darker);
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+}
+
+.title {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(3.5rem, 12vw, 7rem);
+  line-height: 1;
+  color: var(--yellow);
+  text-shadow: 4px 4px 0 var(--orange), 8px 8px 0 rgba(255,107,53,0.3);
+}
+
+.title span {
+  color: var(--orange);
+  text-shadow: 4px 4px 0 var(--pink), 8px 8px 0 rgba(255,77,128,0.3);
+}
+
+.tagline {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.7);
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+.tagline strong { color: var(--yellow); }
+
+.screenshot-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.screenshot-frame {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 4px solid var(--yellow);
+  box-shadow: 0 0 0 8px rgba(255,217,61,0.15), 0 20px 60px rgba(0,0,0,0.6);
+}
+
+.screenshot {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 200px;
+  background: var(--card-bg);
+  object-fit: cover;
+}
+
+.screen-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.screenshot-label {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.4);
+  font-weight: 600;
+}
+
+.about {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.2rem;
+  width: 100%;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 2px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  padding: 1.8rem 1.4rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  border-color: var(--yellow);
+}
+
+.card .icon { font-size: 2.4rem; }
+
+.card h3 {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.2rem;
+  color: var(--yellow);
+}
+
+.card p {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.5;
+}
+
+.download-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--yellow);
+  color: var(--darker);
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.4rem;
+  padding: 1rem 2.5rem;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 6px 0 var(--orange), 0 10px 30px rgba(255,217,61,0.25);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.download-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 9px 0 var(--orange), 0 16px 40px rgba(255,217,61,0.35);
+}
+
+.download-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 0 var(--orange), 0 6px 20px rgba(255,217,61,0.2);
+}
+
+.download-note {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.35);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+footer {
+  text-align: center;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.25);
+}
+
+footer strong { color: rgba(255,255,255,0.5); }
+
+@media (max-width: 500px) {
+  .title { font-size: 3.2rem; }
+  .download-btn { font-size: 1.2rem; padding: 0.9rem 2rem; }
+}
