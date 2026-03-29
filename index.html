@@ -29,7 +29,6 @@
 
     <section class="screenshot-section">
       <div class="screenshot-frame">
-        <!-- REEMPLAZA este src con tu imagen -->
         <img src="Imagen/mainmenu.png" alt="Captura del juego" class="screenshot" />
         <div class="screen-shine"></div>
       </div>
@@ -55,7 +54,6 @@
     </section>
 
     <section class="download-section">
-      <!-- REEMPLAZA el href con tu enlace real -->
       <a href="https://github.com/ShaimHowl/STEAL-A-COINS-1/releases/download/v1.0/JuegoHecho.zip" class="download-btn" download>
         <span class="btn-icon">⬇️</span>
         Descargar el juego
@@ -63,11 +61,79 @@
       <p class="download-note">Gratis · Windows · Hecho con ❤️</p>
     </section>
 
+    <!-- CONTACTO -->
+    <section class="contact-section">
+      <h2 class="contact-title">✉️ Escríbenos <span>aquí</span></h2>
+      <p class="contact-sub">¿Bugs, sugerencias o simplemente quieres saludar? ¡Adelante!</p>
+
+      <form
+        class="contact-form"
+        action="https://formspree.io/f/xlgojvky"
+        method="POST"
+        id="contactForm"
+      >
+        <input type="hidden" name="_replyto" value="showlader@elpuig.xeill.net" />
+        <input type="hidden" name="_subject" value="🎮 Mensaje desde la web de CoinDash" />
+        <input type="text" name="_gotcha" style="display:none" />
+
+        <div class="form-group">
+          <label for="name">Tu nombre</label>
+          <input type="text" id="name" name="name" placeholder="¿Cómo te llamas?" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Tu correo</label>
+          <input type="email" id="email" name="email" placeholder="para poder responderte" required />
+        </div>
+
+        <div class="form-group">
+          <label for="message">Mensaje</label>
+          <textarea id="message" name="message" placeholder="Cuéntanos lo que quieras..." required></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          🚀 Enviar mensaje
+        </button>
+      </form>
+
+      <div class="form-success" id="formSuccess">
+        <span class="big">🎉</span>
+        <span>¡Mensaje enviado!</span>
+        <span class="sub">Te responderemos pronto.</span>
+      </div>
+    </section>
+
     <footer>
       <p>Hecho por <strong>Shaim y Jansen</strong> · 2026</p>
     </footer>
 
   </div>
+
+  <script>
+    const form = document.getElementById('contactForm');
+    const success = document.getElementById('formSuccess');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const action = form.getAttribute('action');
+      try {
+        const res = await fetch(action, {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+          form.style.display = 'none';
+          success.classList.add('visible');
+        } else {
+          alert('Hubo un error al enviar. Inténtalo de nuevo.');
+        }
+      } catch {
+        alert('Sin conexión. Inténtalo más tarde.');
+      }
+    });
+  </script>
 
 </body>
 </html>
