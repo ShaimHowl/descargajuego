@@ -238,8 +238,110 @@ footer strong { color: rgba(255,255,255,0.5); }
   .contact-form { padding: 1.4rem 1rem; }
 }
 
-/* ── CONTACTO ─────────────────────────────── */
+/* ── CONTROLES ──────────────────────────────── */
+.controls-section {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
 
+.controls-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: 2rem;
+  color: var(--yellow);
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.controls-sub {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.35);
+  text-align: center;
+  margin-bottom: 0.6rem;
+}
+
+.ctrl-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1.5px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.03);
+  transition: border-color 0.2s, transform 0.15s;
+}
+
+.ctrl-row:hover {
+  border-color: var(--yellow);
+  transform: translateX(4px);
+}
+
+.key-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 110px;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--darker);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-bottom: 3px solid rgba(255,255,255,0.08);
+  border-radius: 7px;
+  height: 34px;
+  min-width: 34px;
+  padding: 0 10px;
+  font-family: 'Fredoka One', cursive;
+  font-size: 0.9rem;
+  color: var(--yellow);
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.key-wide {
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+.divider-v {
+  width: 1px;
+  height: 36px;
+  background: rgba(255,255,255,0.1);
+  flex-shrink: 0;
+}
+
+.ctrl-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ctrl-action {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--white);
+}
+
+.ctrl-desc {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.3);
+}
+
+.ctrl-sep {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 0.2rem 0;
+}
+
+/* ── CONTACTO ─────────────────────────────── */
 .contact-section {
   width: 100%;
   max-width: 560px;
