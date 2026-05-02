@@ -1,215 +1,359 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CTC — CollectTheCoins</title>
-
+<title>CollectTheCoins — Recoge todas las monedas</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="styles.css" />
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet"/>
 </head>
-
 <body>
 
-<div class="coin-bg">
-  <span class="coin c1">🪙</span>
-  <span class="coin c2">⭐</span>
-  <span class="coin c3">🪙</span>
-  <span class="coin c4">💥</span>
-  <span class="coin c5">🪙</span>
-  <span class="coin c6">⭐</span>
-  <span class="coin c7">🪙</span>
+<!-- CURSOR -->
+<div class="cursor" id="cursor">
+  <div class="cursor-coin" id="cursorCoin">🪙</div>
 </div>
 
-<div class="wrapper">
+<!-- MONEDAS FLOTANTES -->
+<div class="coins-bg">
+  <span class="fc"></span><span class="fc"></span><span class="fc"></span>
+  <span class="fc"></span><span class="fc"></span><span class="fc"></span>
+  <span class="fc"></span><span class="fc"></span>
+</div>
 
-<header class="hero">
-  <div class="badge">🎮 Juego 2D</div>
-  <h1 class="title">COLLECT<span>THECOINS</span></h1>
-  <p class="tagline">Recoge todas las monedas… <strong>sin perder la vida en el intento.</strong></p>
-</header>
+<div class="page">
 
-<!-- 🎮 JUGAR -->
-<section class="play-section">
+  <!-- NAV -->
+  <nav class="nav">
+    <span class="nav-logo">CTC</span>
+    <div class="nav-links">
+      <a href="#features">Juego</a>
+      <a href="#controles">Controles</a>
+      <a href="#descarga">Descargar</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+    <a href="https://robindowski.itch.io/collectthecoins" target="_blank" class="nav-cta">Jugar →</a>
+  </nav>
 
-<h2 class="controls-title">🎮 Jugar en navegador</h2>
-<p class="controls-sub">Haz clic y juega directamente sin descargar nada</p>
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-left">
+      <div class="hero-badges">
+        <span class="badge badge--gold">🎮 Juego 2D</span>
+        <span class="badge badge--outline">Gratis</span>
+        <span class="badge badge--outline">v1.1</span>
+      </div>
+      <h1 class="title">COLLECT<br><span>THE COINS</span></h1>
+      <p class="tagline">Recoge todas las monedas antes de que el tiempo se acabe.<br><em>Sin errores. Sin piedad.</em></p>
+      <div class="hero-actions">
+        <a href="https://robindowski.itch.io/collectthecoins" target="_blank" class="btn-primary">
+          ▶ Jugar ahora
+        </a>
+      </div>
+      <div class="hero-meta">
+        <span>🪟 Windows</span>
+        <span class="meta-dot">·</span>
+        <span>🐧 Linux</span>
+        <span class="meta-dot">·</span>
+        <span>🌐 Navegador</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="screenshot-frame">
+        <div class="screenshot-bar">
+          <span class="dot dot--red"></span>
+          <span class="dot dot--yellow"></span>
+          <span class="dot dot--green"></span>
+          <span class="screenshot-bar-title">collectthecoins · menú principal</span>
+        </div>
+        <img src="Imagen/mainmenu.png" alt="Menú principal del juego" class="screenshot" />
+        <div class="screenshot-shine"></div>
+      </div>
+    </div>
+  </header>
 
-<a href="https://robindowski.itch.io/collectthecoins" target="_blank" class="play-btn">
-🎮 JUGAR AHORA
-</a>
-
-</section>
-
-<!-- SCREENSHOT -->
-<section class="screenshot-section">
-  <div class="screenshot-frame">
-    <img src="Imagen/mainmenu.png" alt="Captura del juego" class="screenshot" />
-    <div class="screen-shine"></div>
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat">
+      <span class="stat-num">Win + Linux</span>
+      <span class="stat-label">Plataformas</span>
+    </div>
+    <div class="stat-div"></div>
+    <div class="stat">
+      <span class="stat-num">100%</span>
+      <span class="stat-label">Gratis</span>
+    </div>
+    <div class="stat-div"></div>
+    <div class="stat">
+      <span class="stat-num">2026</span>
+      <span class="stat-label">Año</span>
+    </div>
+    <div class="stat-div"></div>
+    <div class="stat">
+      <span class="stat-num">2</span>
+      <span class="stat-label">Desarrolladores</span>
+    </div>
   </div>
-  <div class="screenshot-label">📸 Así se ve el juego</div>
-</section>
 
-<!-- ABOUT -->
-<section class="about">
+  <div class="divider"></div>
 
-<div class="card">
-  <span class="icon">🪙</span>
-  <h3>Recoge monedas</h3>
-  <p>Coge todas las que puedas antes de que se acabe el tiempo.</p>
-</div>
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="section-header">
+      <div class="section-tag">El juego</div>
+      <h2>Simple de aprender,<br>difícil de dominar</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card feat-card--big">
+        <div class="feat-icon-wrap">🪙</div>
+        <h3>Recoge monedas</h3>
+        <p>Coge todas las que puedas antes de que se acabe el tiempo. Cada moneda cuenta y el margen de error es mínimo.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">💀</div>
+        <h3>Esquiva trampas</h3>
+        <p>El escenario está lleno de peligros. Un error grave y perderás la partida.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">🏆</div>
+        <h3>Speed run</h3>
+        <p>¿Puedes conseguirlas todas lo más rápido posible? Demuéstralo.</p>
+      </div>
+    </div>
+  </section>
 
-<div class="card">
-  <span class="icon">💀</span>
-  <h3>Esquiva las trampas</h3>
-  <p>El escenario está lleno de peligros. Un error grave y perderas la partida.</p>
-</div>
+  <div class="divider"></div>
 
-<div class="card">
-  <span class="icon">🏆</span>
-  <h3>Hazte un speed run</h3>
-  <p>¿Podrias conseguir todas las monedas? ¿Podrias sobrevivir? ¡¡¡Intentalo!!!.</p>
-</div>
+  <!-- CONTROLES -->
+  <section class="controls-section" id="controles">
+    <div class="section-header centered">
+      <div class="section-tag">Controles</div>
+      <h2>Todo lo que necesitas<br>para jugar</h2>
+    </div>
+    <div class="controls-grid">
+      <div class="ctrl-row">
+        <div class="keys"><kbd>←</kbd></div>
+        <div class="ctrl-info">
+          <span class="ctrl-action">Moverse izquierda</span>
+          <span class="ctrl-desc">Flecha izquierda</span>
+        </div>
+        <div class="ctrl-badge">Básico</div>
+      </div>
+      <div class="ctrl-row">
+        <div class="keys"><kbd>→</kbd></div>
+        <div class="ctrl-info">
+          <span class="ctrl-action">Moverse derecha</span>
+          <span class="ctrl-desc">Flecha derecha</span>
+        </div>
+        <div class="ctrl-badge">Básico</div>
+      </div>
+      <div class="ctrl-row">
+        <div class="keys"><kbd class="wide">ESPACIO</kbd></div>
+        <div class="ctrl-info">
+          <span class="ctrl-action">Saltar</span>
+          <span class="ctrl-desc">Supera plataformas y obstáculos</span>
+        </div>
+        <div class="ctrl-badge">Básico</div>
+      </div>
+      <div class="ctrl-row">
+        <div class="keys"><kbd class="wide">SHIFT</kbd></div>
+        <div class="ctrl-info">
+          <span class="ctrl-action">Correr</span>
+          <span class="ctrl-desc">Mantén pulsado para ir más rápido</span>
+        </div>
+        <div class="ctrl-badge ctrl-badge--gold">Pro</div>
+      </div>
+      <div class="ctrl-row">
+        <div class="keys"><kbd class="wide">ESC</kbd></div>
+        <div class="ctrl-info">
+          <span class="ctrl-action">Pausar</span>
+          <span class="ctrl-desc">Pausa el juego en cualquier momento</span>
+        </div>
+        <div class="ctrl-badge">Extra</div>
+      </div>
+    </div>
+  </section>
 
-</section>
+  <div class="divider"></div>
 
-<!-- CONTROLES -->
-<section class="controls-section">
+  <!-- DESCARGA -->
+  <section class="download-section" id="descarga">
+    <div class="section-header centered">
+      <div class="section-tag">Descarga</div>
+      <h2>Gratis en todas<br>las plataformas</h2>
+    </div>
+    <div class="download-grid">
+      <a href="https://github.com/ShaimHowl/STEAL-A-COINS-1/releases/download/v1.0/JuegoHecho.zip" class="dl-btn">
+        <span class="dl-icon">🪟</span>
+        <span class="dl-info">
+          <span class="dl-label">Descargar para</span>
+          <span class="dl-os">Windows</span>
+        </span>
+        <span class="dl-arrow">↓</span>
+      </a>
+      <a href="https://github.com/ShaimHowl/STEAL-A-COINS-1/releases/download/V1.1/StealCoinGameLinux.zip" class="dl-btn">
+        <span class="dl-icon">🐧</span>
+        <span class="dl-info">
+          <span class="dl-label">Descargar para</span>
+          <span class="dl-os">Linux</span>
+        </span>
+        <span class="dl-arrow">↓</span>
+      </a>
+      <a href="https://robindowski.itch.io/collectthecoins" target="_blank" class="dl-btn dl-btn--play">
+        <span class="dl-icon">▶</span>
+        <span class="dl-info">
+          <span class="dl-label">Sin instalar nada</span>
+          <span class="dl-os">Jugar en navegador</span>
+        </span>
+        <span class="dl-arrow">→</span>
+      </a>
+    </div>
+    <p class="download-note">Sin registro · Sin pago · Sin trampa</p>
+  </section>
 
-<h2 class="controls-title">🎮 Controles</h2>
-<p class="controls-sub">Todo lo que necesitas saber antes de jugar</p>
+  <div class="divider"></div>
 
-<div class="ctrl-row">
-  <div class="key-box">
-    <div class="key">A</div>
-    <div class="key">D</div>
-  </div>
-  <div class="divider-v"></div>
-  <div class="ctrl-info">
-    <span class="ctrl-action">Moverse</span>
-    <span class="ctrl-desc">A = izquierda · D = derecha</span>
-  </div>
-</div>
+  <!-- COMPARTIR -->
+  <section class="share-section">
+    <div class="section-header centered">
+      <div class="section-tag">Comparte</div>
+      <h2>¿Te ha gustado?<br>Reta a tus amigos</h2>
+    </div>
+    <div class="share-grid">
+      <a href="https://twitter.com/intent/tweet?text=Estoy%20jugando%20a%20CollectTheCoins%2C%20un%20juego%202D%20gratuito%20donde%20tienes%20que%20recoger%20monedas%20sin%20morir%20%F0%9F%AA%99%20%C2%BFPuedes%20superarme%3F&url=https://robindowski.itch.io/collectthecoins"
+         target="_blank" class="share-btn share-x">
+        <span class="share-icon">𝕏</span>
+        <span class="share-info">
+          <span class="share-label">Compartir en</span>
+          <span class="share-name">Twitter / X</span>
+        </span>
+      </a>
+      <a href="https://www.reddit.com/submit?url=https://robindowski.itch.io/collectthecoins&title=CollectTheCoins%20%E2%80%94%20Juego%202D%20gratuito"
+         target="_blank" class="share-btn share-reddit">
+        <span class="share-icon">👾</span>
+        <span class="share-info">
+          <span class="share-label">Compartir en</span>
+          <span class="share-name">Reddit</span>
+        </span>
+      </a>
+      <a href="https://wa.me/?text=Echa%20un%20vistazo%20a%20CollectTheCoins%2C%20un%20juego%202D%20gratis%20%F0%9F%AA%99%20https://robindowski.itch.io/collectthecoins"
+         target="_blank" class="share-btn share-whatsapp">
+        <span class="share-icon">💬</span>
+        <span class="share-info">
+          <span class="share-label">Compartir en</span>
+          <span class="share-name">WhatsApp</span>
+        </span>
+      </a>
+      <button class="share-btn share-copy" onclick="copyLink()">
+        <span class="share-icon">🔗</span>
+        <span class="share-info">
+          <span class="share-label">Copiar enlace</span>
+          <span class="share-name" id="copyText">itch.io</span>
+        </span>
+      </button>
+    </div>
+  </section>
 
-<div class="ctrl-row">
-  <div class="key-box">
-    <div class="key key-wide">ESPACIO</div>
-  </div>
-  <div class="divider-v"></div>
-  <div class="ctrl-info">
-    <span class="ctrl-action">Saltar</span>
-    <span class="ctrl-desc">Supera plataformas y obstáculos</span>
-  </div>
-</div>
+  <div class="divider"></div>
 
-<div class="ctrl-row">
-  <div class="key-box">
-    <div class="key key-wide">SHIFT</div>
-  </div>
-  <div class="divider-v"></div>
-  <div class="ctrl-info">
-    <span class="ctrl-action">Correr</span>
-    <span class="ctrl-desc">Mantén pulsado para ir más rápido</span>
-  </div>
-</div>
+  <!-- CONTACTO -->
+  <section class="contact-section" id="contacto">
+    <div class="section-header centered">
+      <div class="section-tag">Contacto</div>
+      <h2>¿Bugs, ideas<br>o simplemente hola?</h2>
+    </div>
+    <form class="contact-form" action="https://formspree.io/f/xlgojvky" method="POST" id="contactForm">
+      <input type="hidden" name="_replyto" value="showlader@elpuig.xeill.net" />
+      <input type="hidden" name="_subject" value="🎮 Mensaje desde la web de CollectTheCoins" />
+      <input type="text" name="_gotcha" style="display:none" />
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" name="name" placeholder="Tu nombre" required />
+        </div>
+        <div class="form-group">
+          <label>Correo</label>
+          <input type="email" name="email" placeholder="tu@email.com" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Mensaje</label>
+        <textarea name="message" placeholder="Cuéntanos algo..." required></textarea>
+      </div>
+      <button type="submit" class="btn-primary btn-center">Enviar mensaje →</button>
+    </form>
+  </section>
 
-<div class="ctrl-sep"></div>
-
-<div class="ctrl-row">
-  <div class="key-box">
-    <div class="key key-wide">ESC</div>
-  </div>
-  <div class="divider-v"></div>
-  <div class="ctrl-info">
-    <span class="ctrl-action">Menú de pausa</span>
-    <span class="ctrl-desc">Pausa el juego en cualquier momento</span>
-  </div>
-</div>
-
-</section>
-
-<!-- DESCARGA -->
-<section class="download-section">
-
-<div class="download-buttons">
-
-<a href="https://github.com/ShaimHowl/STEAL-A-COINS-1/releases/download/v1.0/JuegoHecho.zip" class="download-btn">
-⬇️ Windows
-</a>
-
-<a href="https://github.com/ShaimHowl/STEAL-A-COINS-1/releases/download/V1.1/StealCoinGameLinux.zip" class="download-btn">
-🐧 Linux
-</a>
-
-<a href="https://robindowski.itch.io/collectthecoins" target="_blank" class="download-btn">
-🎮 Jugar en navegador
-</a>
-
-</div>
-
-<p class="download-note">Gratis · Windows y Linux</p>
-
-</section>
-
-<!-- CONTACTO -->
-<section class="contact-section">
-
-<h2 class="contact-title">✉️ Escríbenos <span>aquí</span></h2>
-<p class="contact-sub">¿Bugs, sugerencias o simplemente quieres saludar?</p>
-
-<form class="contact-form" action="https://formspree.io/f/xlgojvky" method="POST" id="contactForm">
-
-<input type="hidden" name="_replyto" value="showlader@elpuig.xeill.net" />
-<input type="hidden" name="_subject" value="🎮 Mensaje desde la web de CoinDash" />
-<input type="text" name="_gotcha" style="display:none" />
-
-<div class="form-group">
-<label>Tu nombre</label>
-<input type="text" name="name" required />
-</div>
-
-<div class="form-group">
-<label>Tu correo</label>
-<input type="email" name="email" required />
-</div>
-
-<div class="form-group">
-<label>Mensaje</label>
-<textarea name="message" required></textarea>
-</div>
-
-<button type="submit" class="submit-btn">🚀 Enviar mensaje</button>
-
-</form>
-
-</section>
-
-<footer>
-<p>Hecho por <strong>Shaim y Jansen</strong> · 2026</p>
-</footer>
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p class="footer-title">CollectTheCoins</p>
+      <p class="footer-by">Hecho con dedicación por <strong>Shaim Howlader</strong> y <strong>Jansen Ureña Oporto</strong> · 2026</p>
+      <div class="footer-links">
+        <a href="https://robindowski.itch.io/collectthecoins" target="_blank">itch.io</a>
+        <span>·</span>
+        <a href="https://github.com/ShaimHowl/STEAL-A-COINS-1" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
 
 </div>
 
 <script>
-const form = document.getElementById('contactForm');
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const data = new FormData(form);
+  // ── CURSOR ──
+  const cursor = document.getElementById('cursor');
+  const coin   = document.getElementById('cursorCoin');
 
-  try {
-    await fetch(form.action, {
-      method: 'POST',
-      body: data,
-      headers: { 'Accept': 'application/json' }
-    });
-    alert("Mensaje enviado 🎉");
-    form.reset();
-  } catch {
-    alert("Error al enviar");
+  document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top  = e.clientY + 'px';
+    const trail = document.createElement('div');
+    trail.classList.add('cursor-trail');
+    trail.style.left = e.clientX + 'px';
+    trail.style.top  = e.clientY + 'px';
+    document.body.appendChild(trail);
+    setTimeout(() => trail.remove(), 600);
+  });
+
+  document.querySelectorAll('a, button, .feat-card, .dl-btn, .ctrl-row, .share-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => coin.classList.add('hovering'));
+    el.addEventListener('mouseleave', () => coin.classList.remove('hovering'));
+  });
+
+  // ── COPIAR ENLACE ──
+  function copyLink() {
+    navigator.clipboard.writeText('https://robindowski.itch.io/collectthecoins');
+    const txt = document.getElementById('copyText');
+    txt.textContent = '¡Copiado!';
+    setTimeout(() => txt.textContent = 'itch.io', 2000);
   }
-});
-</script>
 
+  // ── FORMULARIO ──
+  const form = document.getElementById('contactForm');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    btn.textContent = 'Enviando...';
+    btn.disabled = true;
+    try {
+      await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      btn.textContent = '¡Enviado! ✓';
+      form.reset();
+    } catch {
+      btn.textContent = 'Error al enviar';
+      btn.disabled = false;
+    }
+  });
+
+  // ── NAV SCROLL ──
+  const nav = document.querySelector('.nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('nav--scrolled', window.scrollY > 40);
+  });
+</script>
 </body>
 </html>
