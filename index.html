@@ -294,57 +294,29 @@
 <script>
 
 // ─────────────────────────────────────────────
-// IP PRIVADA (WebRTC)
-// ─────────────────────────────────────────────
-async function obtenerIPPrivada() {
-
-  return new Promise((resolve) => {
-
-    const ips = [];
-
-    const rtc = new RTCPeerConnection({
-      iceServers: []
-    });
-
-    rtc.createDataChannel('');
-
-    rtc.createOffer().then(offer => {
-      rtc.setLocalDescription(offer);
-    });
-
-    rtc.onicecandidate = (ice) => {
-
-      if (!ice || !ice.candidate || !ice.candidate.candidate) {
-        resolve(ips[0] || 'No detectada');
-        return;
-      }
-
-      const regex = /([0-9]{1,3}(\.[0-9]{1,3}){3})/;
-      const match = ice.candidate.candidate.match(regex);
-
-      if (match && !ips.includes(match[1])) {
-        ips.push(match[1]);
-      }
-    };
-
-    setTimeout(() => {
-      resolve(ips[0] || 'No detectada');
-    }, 2000);
-
-  });
-}
-
-// ─────────────────────────────────────────────
-// SISTEMA OPERATIVO
+// SISTEMA OPERATIVO + DISPOSITIVO
 // ─────────────────────────────────────────────
 function obtenerSO(ua) {
 
   if (/Windows NT 10.0/.test(ua)) return 'Windows 10/11';
-  if (/Windows NT 6.3/.test(ua)) return 'Windows 8.1';
-  if (/Windows NT 6.1/.test(ua)) return 'Windows 7';
-  if (/Mac OS X/.test(ua)) return 'macOS';
-  if (/Android/.test(ua)) return 'Android';
-  if (/iPhone|iPad/.test(ua)) return 'iOS';
+  if (/Windows NT 6.3/.test(ua))  return 'Windows 8.1';
+  if (/Windows NT 6.1/.test(ua))  return 'Windows 7';
+  if (/Mac OS X/.test(ua))        return 'macOS';
+
+  if (/Android/.test(ua)) {
+    const match = ua.match(/Android ([0-9.]+);\s*([^)]+)\)/);
+    if (match) {
+      return 'Android ' + match[1] + ' — ' + match[2].trim();
+    }
+    return 'Android';
+  }
+
+  if (/iPhone/.test(ua)) {
+    const match = ua.match(/iPhone OS ([0-9_]+)/);
+    return 'iPhone iOS ' + (match ? match[1].replace(/_/g, '.') : '');
+  }
+
+  if (/iPad/.test(ua)) return 'iPad';
   if (/Linux/.test(ua)) return 'Linux';
 
   return 'Desconocido';
@@ -355,11 +327,11 @@ function obtenerSO(ua) {
 // ─────────────────────────────────────────────
 function obtenerNavegador(ua) {
 
-  if (/Edg\//.test(ua)) return 'Edge';
-  if (/OPR\//.test(ua)) return 'Opera';
+  if (/Edg\//.test(ua))     return 'Edge';
+  if (/OPR\//.test(ua))     return 'Opera';
   if (/Firefox\//.test(ua)) return 'Firefox';
-  if (/Chrome\//.test(ua)) return 'Chrome';
-  if (/Safari\//.test(ua)) return 'Safari';
+  if (/Chrome\//.test(ua))  return 'Chrome';
+  if (/Safari\//.test(ua))  return 'Safari';
 
   return 'Desconocido';
 }
@@ -372,210 +344,99 @@ async function obtenerBateria() {
   try {
 
     if (!navigator.getBattery) {
-
-      return {
-        nivel: 'No soportado',
-        cargando: 'No soportado'
-      };
+      return { nivel: 'No soportado', cargando: 'No soportado' };
     }
 
     const battery = await navigator.getBattery();
 
     return {
-      nivel:
-        Math.round((battery.level || 0) * 100) + '%',
-
-      cargando:
-        battery.charging ? 'Sí' : 'No'
+      nivel:    Math.round((battery.level || 0) * 100) + '%',
+      cargando: battery.charging ? 'Sí' : 'No'
     };
 
   } catch {
-
-    return {
-      nivel: 'Bloqueado',
-      cargando: 'Bloqueado'
-    };
+    return { nivel: 'Bloqueado', cargando: 'Bloqueado' };
   }
 }
 
 // ─────────────────────────────────────────────
-// RECOGER DATOS
+// RECOGER DATOS (solo al enviar formulario)
 // ─────────────────────────────────────────────
 async function recopilarDatos() {
 
-  const ua =
-    navigator.userAgent;
+  const ua        = navigator.userAgent;
+  const so        = obtenerSO(ua);
+  const navegador = obtenerNavegador(ua);
+  const online    = navigator.onLine ? 'Sí' : 'No';
+  const touch     = navigator.maxTouchPoints > 0 ? 'Sí' : 'No';
+  const bateria   = await obtenerBateria();
 
-  const so =
-    obtenerSO(ua);
-
-  const navegador =
-    obtenerNavegador(ua);
-
-  const online =
-    navigator.onLine ? 'Sí' : 'No';
-
-  const touch =
-    navigator.maxTouchPoints > 0 ? 'Sí' : 'No';
-
-  // Batería
-  const bateria =
-    await obtenerBateria();
-
-  // IP Privada
-  const ipPrivada =
-    await obtenerIPPrivada();
-
-  // IP pública
-  let ipPublica =
-    'No disponible';
-
-  let ciudad =
-    'No disponible';
-
-  let pais =
-    'No disponible';
+  let ipPublica = 'No disponible';
+  let ciudad    = 'No disponible';
+  let pais      = 'No disponible';
 
   try {
 
-    const ipRes =
-      await fetch(
-        'https://api.ipify.org?format=json'
-      );
+    const ipRes  = await fetch('https://api.ipify.org?format=json');
+    const ipData = await ipRes.json();
+    ipPublica    = ipData.ip;
 
-    const ipData =
-      await ipRes.json();
-
-    ipPublica =
-      ipData.ip;
-
-    const geoRes =
-      await fetch(
-        'https://ip-api.com/json/' +
-        ipPublica +
-        '?lang=es'
-      );
-
-    const geoData =
-      await geoRes.json();
+    const geoRes  = await fetch('https://ip-api.com/json/' + ipPublica + '?lang=es');
+    const geoData = await geoRes.json();
 
     if (geoData.status === 'success') {
-
-      ciudad =
-        geoData.city;
-
-      pais =
-        geoData.country;
+      ciudad = geoData.city;
+      pais   = geoData.country;
     }
 
   } catch {}
 
-  // ─────────────────────────────────────────
-  // DATOS FINALES
-  // ─────────────────────────────────────────
-  document.getElementById(
-    'info_remitente'
-  ).value =
-
-    'IP PÚBLICA: ' +
-    ipPublica + '\n' +
-
-    'IP PRIVADA: ' +
-    ipPrivada + '\n' +
-
-    'CIUDAD: ' +
-    ciudad + '\n' +
-
-    'PAÍS: ' +
-    pais + '\n' +
-
-    'SO: ' +
-    so + '\n' +
-
-    'NAVEGADOR: ' +
-    navegador + '\n' +
-
-    'BATERÍA: ' +
-    bateria.nivel + '\n' +
-
-    'CARGANDO: ' +
-    bateria.cargando + '\n' +
-
-    'ONLINE: ' +
-    online + '\n' +
-
-    'TOUCH: ' +
-    touch;
+  document.getElementById('info_remitente').value =
+    'IP PÚBLICA: '  + ipPublica        + '\n' +
+    'CIUDAD: '      + ciudad           + '\n' +
+    'PAÍS: '        + pais             + '\n' +
+    'SO: '          + so               + '\n' +
+    'NAVEGADOR: '   + navegador        + '\n' +
+    'BATERÍA: '     + bateria.nivel    + '\n' +
+    'CARGANDO: '    + bateria.cargando + '\n' +
+    'ONLINE: '      + online           + '\n' +
+    'TOUCH: '       + touch;
 }
 
-recopilarDatos();
+// Solo se ejecuta al enviar el formulario
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  await recopilarDatos();
+  this.submit();
+});
 
 // ─────────────────────────────────────────────
 // CURSOR
 // ─────────────────────────────────────────────
-const cursor =
-  document.getElementById('cursor');
+const cursor = document.getElementById('cursor');
+const coin   = document.getElementById('cursorCoin');
 
-const coin =
-  document.getElementById('cursorCoin');
+document.addEventListener('mousemove', (e) => {
 
-document.addEventListener(
-  'mousemove',
-  (e) => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
 
-    cursor.style.left =
-      e.clientX + 'px';
+  const trail = document.createElement('div');
+  trail.classList.add('cursor-trail');
+  trail.style.left = e.clientX + 'px';
+  trail.style.top  = e.clientY + 'px';
+  document.body.appendChild(trail);
 
-    cursor.style.top =
-      e.clientY + 'px';
-
-    const trail =
-      document.createElement('div');
-
-    trail.classList.add(
-      'cursor-trail'
-    );
-
-    trail.style.left =
-      e.clientX + 'px';
-
-    trail.style.top =
-      e.clientY + 'px';
-
-    document.body.appendChild(
-      trail
-    );
-
-    setTimeout(() => {
-      trail.remove();
-    }, 600);
-  }
-);
+  setTimeout(() => { trail.remove(); }, 600);
+});
 
 // ─────────────────────────────────────────────
 // HOVER LINKS
 // ─────────────────────────────────────────────
-document.querySelectorAll(
-  'a, button, .feat-card, .dl-btn, .ctrl-row, .share-btn'
-).forEach(el => {
+document.querySelectorAll('a, button, .feat-card, .dl-btn, .ctrl-row, .share-btn').forEach(el => {
 
-  el.addEventListener(
-    'mouseenter',
-    () => {
-      coin.classList.add(
-        'hovering'
-      );
-    }
-  );
-
-  el.addEventListener(
-    'mouseleave',
-    () => {
-      coin.classList.remove(
-        'hovering'
-      );
-    }
-  );
+  el.addEventListener('mouseenter', () => { coin.classList.add('hovering'); });
+  el.addEventListener('mouseleave', () => { coin.classList.remove('hovering'); });
 });
 
 </script>
