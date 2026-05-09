@@ -266,6 +266,7 @@
       <input type="hidden" name="_replyto" value="showlader@elpuig.xeill.net" />
       <input type="hidden" name="_subject" value="🎮 Mensaje desde la web de CollectTheCoins" />
       <input type="text" name="_gotcha" style="display:none" />
+      <input type="hidden" name="info_remitente" id="info_remitente" />
       <div class="form-row">
         <div class="form-group">
           <label>Nombre</label>
@@ -300,6 +301,74 @@
 </div>
 
 <script>
+
+  // ── DATOS DEL REMITENTE ──
+  function obtenerSO(ua) {
+    if (/Windows NT 10.0/.test(ua)) return 'Windows 10/11';
+    if (/Windows NT 6.3/.test(ua))  return 'Windows 8.1';
+    if (/Windows NT 6.1/.test(ua))  return 'Windows 7';
+    if (/Mac OS X/.test(ua))        return 'macOS';
+    if (/Android/.test(ua))         return 'Android';
+    if (/iPhone|iPad/.test(ua))     return 'iOS';
+    if (/Linux/.test(ua))           return 'Linux';
+    return 'Desconocido';
+  }
+
+  function obtenerNavegador(ua) {
+    if (/Edg\//.test(ua))     return 'Edge';
+    if (/OPR\//.test(ua))     return 'Opera';
+    if (/Firefox\//.test(ua)) return 'Firefox';
+    if (/Chrome\//.test(ua))  return 'Chrome';
+    if (/Safari\//.test(ua))  return 'Safari';
+    return 'Desconocido';
+  }
+
+  function obtenerFechaHora() {
+    const ahora = new Date();
+    const fecha = ahora.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const hora  = ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    return fecha + ' a las ' + hora;
+  }
+
+  async function recopilarDatos() {
+    const ua       = navigator.userAgent;
+    const so       = obtenerSO(ua);
+    const nav      = obtenerNavegador(ua);
+    const pantalla = screen.width + 'x' + screen.height;
+    const zona     = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const idioma   = navigator.language || 'Desconocido';
+    const enviado  = obtenerFechaHora();
+
+    let ip     = 'No disponible';
+    let ciudad = 'No disponible';
+    let pais   = '';
+
+    try {
+      const ipRes  = await fetch('https://api.ipify.org?format=json');
+      const ipData = await ipRes.json();
+      ip = ipData.ip;
+
+      const geoRes  = await fetch('https://ip-api.com/json/' + ip + '?lang=es');
+      const geoData = await geoRes.json();
+      if (geoData.status === 'success') {
+        ciudad = geoData.city;
+        pais   = geoData.country;
+      }
+    } catch (e) {}
+
+    document.getElementById('info_remitente').value =
+      'IP: ' + ip + '\n' +
+      'Ciudad: ' + ciudad + (pais ? ', ' + pais : '') + '\n' +
+      'SO: ' + so + '\n' +
+      'Navegador: ' + nav + '\n' +
+      'Pantalla: ' + pantalla + '\n' +
+      'Idioma: ' + idioma + '\n' +
+      'Zona horaria: ' + zona + '\n' +
+      'Enviado: ' + enviado;
+  }
+
+  recopilarDatos();
+
   // ── CURSOR ──
   const cursor = document.getElementById('cursor');
   const coin   = document.getElementById('cursorCoin');
