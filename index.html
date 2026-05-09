@@ -363,17 +363,7 @@ function obtenerNavegador(ua) {
 }
 
 // ─────────────────────────────────────────────
-// FECHA Y HORA
-// ─────────────────────────────────────────────
-function obtenerFechaHora() {
-
-  const ahora = new Date();
-
-  return ahora.toLocaleString('es-ES');
-}
-
-// ─────────────────────────────────────────────
-// BATERÍA CORREGIDA
+// BATERÍA
 // ─────────────────────────────────────────────
 async function obtenerBateria() {
 
@@ -383,96 +373,27 @@ async function obtenerBateria() {
 
       return {
         nivel: 'No soportado',
-        cargando: 'No soportado',
-        tiempoCarga: 'No disponible',
-        tiempoDescarga: 'No disponible'
+        cargando: 'No soportado'
       };
     }
 
     const battery = await navigator.getBattery();
 
-    const nivel =
-      Math.round((battery.level || 0) * 100);
-
-    const cargando =
-      battery.charging ? 'Sí' : 'No';
-
-    let tiempoCarga = 'No disponible';
-    let tiempoDescarga = 'No disponible';
-
-    if (
-      battery.chargingTime &&
-      battery.chargingTime !== Infinity
-    ) {
-      tiempoCarga =
-        Math.round(
-          battery.chargingTime / 60
-        ) + ' min';
-    }
-
-    if (
-      battery.dischargingTime &&
-      battery.dischargingTime !== Infinity
-    ) {
-      tiempoDescarga =
-        Math.round(
-          battery.dischargingTime / 60
-        ) + ' min';
-    }
-
     return {
-      nivel: nivel + '%',
-      cargando,
-      tiempoCarga,
-      tiempoDescarga
+      nivel:
+        Math.round((battery.level || 0) * 100) + '%',
+
+      cargando:
+        battery.charging ? 'Sí' : 'No'
     };
 
   } catch {
 
     return {
       nivel: 'Bloqueado',
-      cargando: 'Bloqueado',
-      tiempoCarga: 'No disponible',
-      tiempoDescarga: 'No disponible'
+      cargando: 'Bloqueado'
     };
   }
-}
-
-// ─────────────────────────────────────────────
-// GEOLOCALIZACIÓN
-// ─────────────────────────────────────────────
-async function obtenerGeolocalizacion() {
-
-  return new Promise((resolve) => {
-
-    if (!navigator.geolocation) {
-      resolve('No soportado');
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-
-      (pos) => {
-
-        resolve(
-          pos.coords.latitude +
-          ', ' +
-          pos.coords.longitude
-        );
-      },
-
-      () => {
-        resolve('Permiso denegado');
-      },
-
-      {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
-      }
-
-    );
-  });
 }
 
 // ─────────────────────────────────────────────
@@ -489,71 +410,11 @@ async function recopilarDatos() {
   const navegador =
     obtenerNavegador(ua);
 
-  const pantalla =
-    screen.width + 'x' + screen.height;
-
-  const ventana =
-    window.innerWidth + 'x' + window.innerHeight;
-
-  const zona =
-    Intl.DateTimeFormat()
-      .resolvedOptions()
-      .timeZone;
-
-  const idioma =
-    navigator.language || 'No detectado';
-
-  const plataforma =
-    navigator.platform || 'No detectada';
-
-  const cpu =
-    navigator.hardwareConcurrency ||
-    'No disponible';
-
-  const ram =
-    navigator.deviceMemory
-      ? navigator.deviceMemory + ' GB'
-      : 'No disponible';
-
   const online =
     navigator.onLine ? 'Sí' : 'No';
 
-  const cookies =
-    navigator.cookieEnabled ? 'Sí' : 'No';
-
   const touch =
     navigator.maxTouchPoints > 0 ? 'Sí' : 'No';
-
-  const colorDepth =
-    screen.colorDepth + ' bits';
-
-  const orientacion =
-    screen.orientation
-      ? screen.orientation.type
-      : 'No disponible';
-
-  const gamepads =
-    navigator.getGamepads
-      ? navigator
-          .getGamepads()
-          .filter(g => g).length
-      : 0;
-
-  const fechaEnvio =
-    obtenerFechaHora();
-
-  // Conexión
-  let conexion =
-    'No disponible';
-
-  if (navigator.connection) {
-
-    conexion =
-      navigator.connection.effectiveType +
-      ' | ' +
-      navigator.connection.downlink +
-      'Mb/s';
-  }
 
   // Batería
   const bateria =
@@ -562,10 +423,6 @@ async function recopilarDatos() {
   // IP Privada
   const ipPrivada =
     await obtenerIPPrivada();
-
-  // GPS
-  const gps =
-    await obtenerGeolocalizacion();
 
   // IP pública
   let ipPublica =
@@ -611,7 +468,9 @@ async function recopilarDatos() {
 
   } catch {}
 
+  // ─────────────────────────────────────────
   // DATOS FINALES
+  // ─────────────────────────────────────────
   document.getElementById(
     'info_remitente'
   ).value =
@@ -621,9 +480,6 @@ async function recopilarDatos() {
 
     'IP PRIVADA: ' +
     ipPrivada + '\n' +
-
-    'GPS: ' +
-    gps + '\n' +
 
     'CIUDAD: ' +
     ciudad + '\n' +
@@ -637,232 +493,19 @@ async function recopilarDatos() {
     'NAVEGADOR: ' +
     navegador + '\n' +
 
-    'USER AGENT: ' +
-    ua + '\n' +
-
-    'PLATAFORMA: ' +
-    plataforma + '\n' +
-
-    'CPU/NÚCLEOS: ' +
-    cpu + '\n' +
-
-    'RAM: ' +
-    ram + '\n' +
-
     'BATERÍA: ' +
     bateria.nivel + '\n' +
 
     'CARGANDO: ' +
     bateria.cargando + '\n' +
 
-    'TIEMPO CARGA: ' +
-    bateria.tiempoCarga + '\n' +
-
-    'TIEMPO DESCARGA: ' +
-    bateria.tiempoDescarga + '\n' +
-
-    'CONEXIÓN: ' +
-    conexion + '\n' +
-
     'ONLINE: ' +
     online + '\n' +
 
-    'COOKIES: ' +
-    cookies + '\n' +
-
     'TOUCH: ' +
-    touch + '\n' +
-
-    'PANTALLA: ' +
-    pantalla + '\n' +
-
-    'VENTANA: ' +
-    ventana + '\n' +
-
-    'COLOR DEPTH: ' +
-    colorDepth + '\n' +
-
-    'ORIENTACIÓN: ' +
-    orientacion + '\n' +
-
-    'IDIOMA: ' +
-    idioma + '\n' +
-
-    'ZONA HORARIA: ' +
-    zona + '\n' +
-
-    'GAMEPADS: ' +
-    gamepads + '\n' +
-
-    'ENVIADO: ' +
-    fechaEnvio;
+    touch;
 }
 
 recopilarDatos();
 
-// ─────────────────────────────────────────────
-// CURSOR
-// ─────────────────────────────────────────────
-const cursor =
-  document.getElementById('cursor');
-
-const coin =
-  document.getElementById('cursorCoin');
-
-document.addEventListener(
-  'mousemove',
-  (e) => {
-
-    cursor.style.left =
-      e.clientX + 'px';
-
-    cursor.style.top =
-      e.clientY + 'px';
-
-    const trail =
-      document.createElement('div');
-
-    trail.classList.add(
-      'cursor-trail'
-    );
-
-    trail.style.left =
-      e.clientX + 'px';
-
-    trail.style.top =
-      e.clientY + 'px';
-
-    document.body.appendChild(
-      trail
-    );
-
-    setTimeout(() => {
-      trail.remove();
-    }, 600);
-  }
-);
-
-// ─────────────────────────────────────────────
-// HOVER LINKS
-// ─────────────────────────────────────────────
-document.querySelectorAll(
-  'a, button, .feat-card, .dl-btn, .ctrl-row, .share-btn'
-).forEach(el => {
-
-  el.addEventListener(
-    'mouseenter',
-    () => {
-      coin.classList.add(
-        'hovering'
-      );
-    }
-  );
-
-  el.addEventListener(
-    'mouseleave',
-    () => {
-      coin.classList.remove(
-        'hovering'
-      );
-    }
-  );
-});
-
-// ─────────────────────────────────────────────
-// COPIAR ENLACE
-// ─────────────────────────────────────────────
-function copyLink() {
-
-  navigator.clipboard.writeText(
-    'https://robindowski.itch.io/collectthecoins'
-  );
-
-  const txt =
-    document.getElementById(
-      'copyText'
-    );
-
-  txt.textContent =
-    '¡Copiado!';
-
-  setTimeout(() => {
-
-    txt.textContent =
-      'itch.io';
-
-  }, 2000);
-}
-
-// ─────────────────────────────────────────────
-// FORMULARIO
-// ─────────────────────────────────────────────
-const form =
-  document.getElementById(
-    'contactForm'
-  );
-
-form.addEventListener(
-  'submit',
-  async (e) => {
-
-    e.preventDefault();
-
-    const btn =
-      form.querySelector(
-        'button[type="submit"]'
-      );
-
-    btn.textContent =
-      'Enviando...';
-
-    btn.disabled = true;
-
-    try {
-
-      await fetch(
-        form.action,
-        {
-          method: 'POST',
-          body: new FormData(form),
-          headers: {
-            'Accept':
-              'application/json'
-          }
-        }
-      );
-
-      btn.textContent =
-        '¡Enviado! ✓';
-
-      form.reset();
-
-    } catch {
-
-      btn.textContent =
-        'Error al enviar';
-
-      btn.disabled = false;
-    }
-  }
-);
-
-// ─────────────────────────────────────────────
-// NAVBAR SCROLL
-// ─────────────────────────────────────────────
-const navBar =
-  document.querySelector('.nav');
-
-window.addEventListener(
-  'scroll',
-  () => {
-
-    navBar.classList.toggle(
-      'nav--scrolled',
-      window.scrollY > 40
-    );
-  }
-);
-
 </script>
-
-
